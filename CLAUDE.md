@@ -33,6 +33,7 @@ The JavaScript adaptation (`index.html`) now implements the core anagram game lo
 - **Uppercase S** - Save current anagram to the saved list
 - **Uppercase Q** - Quit to start screen
 - **Space** - Manually shuffle remaining letters
+- **Backspace** - Undo last letter (removes from anagram and returns to pool)
 - **Lowercase letters (a-z)** - Build anagram by selecting from available letters
 
 ### Key Implementation Details

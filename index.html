@@ -107,8 +107,8 @@
   </style>
 </head>
 <body>
-  <h1>I scramble, you match!</h1>
   <img src="assets/logo.png" alt="Logo" class="logo">
+  <h1>I scramble, you match!</h1>
 
   <div id="input-form">
     <p>Enter a word or phrase to create anagrams:</p>
@@ -128,6 +128,7 @@
     <div class="controls">
       <div>Press C to clear | Press S to save | Press Q to quit | Press SPACE to shuffle</div>
       <div>Type lowercase letters from the pool above to build your anagram</div>
+      <div>Press BACKSPACE to undo the last letter</div>
     </div>
 
     <button id="new-game-btn">New Game</button>
@@ -250,6 +251,15 @@
         e.preventDefault();
         availableLetters = shuffle(availableLetters);
         letterPoolEl.textContent = availableLetters || '(empty)';
+      } else if (key === 'Backspace') {  // Backspace = undo last letter
+        e.preventDefault();
+        if (anagram.length > 0) {
+          const lastLetter = anagram[anagram.length - 1];
+          anagram = anagram.slice(0, -1);
+          availableLetters += lastLetter;
+          letterPoolEl.textContent = availableLetters || '(empty)';
+          anagramEl.textContent = anagram || '(empty)';
+        }
       } else if (/^[a-z]$/.test(key)) {  // Only lowercase letters for anagram
         const index = availableLetters.indexOf(key);
         if (index !== -1) {
