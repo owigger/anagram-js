@@ -2,33 +2,272 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Demo – Anagram-JS</title>
+  <title>Anagram-JS</title>
   <link rel="icon" href="assets/favicon.ico">
 
   <!-- Inline CSS -->
   <style>
-    body {font-family: Arial, sans-serif; margin: 2rem;}
-    h1   {color: #2d89ef;}
-    .logo {max-width: 150px;}
+    body {
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 2rem;
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 {
+      color: #2d89ef;
+      margin-bottom: 1rem;
+    }
+    .logo {
+      max-width: 150px;
+      margin-bottom: 2rem;
+    }
+    #game-container {
+      display: none;
+    }
+    #game-container.active {
+      display: block;
+    }
+    #input-form {
+      margin-bottom: 2rem;
+    }
+    #input-string {
+      padding: 0.5rem;
+      font-size: 1rem;
+      font-family: 'Courier New', monospace;
+      width: 300px;
+      background-color: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+    }
+    #start-btn {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      font-family: 'Courier New', monospace;
+      background-color: #2d89ef;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #start-btn:hover {
+      background-color: #1e6fc9;
+    }
+    .game-display {
+      margin: 2rem 0;
+    }
+    .letter-pool {
+      font-size: 2rem;
+      letter-spacing: 0.5rem;
+      margin-bottom: 2rem;
+      min-height: 3rem;
+      color: #4ec9b0;
+    }
+    .anagram {
+      font-size: 2rem;
+      letter-spacing: 0.5rem;
+      margin-bottom: 2rem;
+      min-height: 3rem;
+      color: #ce9178;
+    }
+    .controls {
+      margin-top: 2rem;
+      color: #858585;
+      font-size: 0.9rem;
+    }
+    .saved-list {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #2d2d2d;
+      border: 1px solid #3e3e3e;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .saved-list h3 {
+      margin-top: 0;
+      color: #2d89ef;
+      font-size: 1rem;
+    }
+    .saved-item {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+    #new-game-btn {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      font-family: 'Courier New', monospace;
+      background-color: #6a9955;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    #new-game-btn:hover {
+      background-color: #548242;
+    }
   </style>
 </head>
 <body>
   <h1>I scramble, you match!</h1>
   <img src="assets/logo.png" alt="Logo" class="logo">
 
-  <p>This page demonstrates a completely static, single‑file project.</p>
+  <div id="input-form">
+    <p>Enter a word or phrase to create anagrams:</p>
+    <input type="text" id="input-string" placeholder="Enter text here" autofocus>
+    <button id="start-btn">Start Game</button>
+  </div>
+
+  <div id="game-container">
+    <div class="game-display">
+      <div>Available letters:</div>
+      <div class="letter-pool" id="letter-pool"></div>
+
+      <div>Your anagram:</div>
+      <div class="anagram" id="anagram"></div>
+    </div>
+
+    <div class="controls">
+      <div>Press C to clear | Press S to save | Press Q to quit</div>
+      <div>Type letters from the pool above to build your anagram</div>
+    </div>
+
+    <button id="new-game-btn">New Game</button>
+
+    <div class="saved-list" id="saved-list-container" style="display: none;">
+      <h3>Saved Anagrams</h3>
+      <div id="saved-list"></div>
+    </div>
+  </div>
 
   <!-- Inline JavaScript -->
   <script>
-    console.log('Demo loaded at', new Date().toLocaleTimeString());
-  </script>
-  <script type="module">
-    // Arrow function, async/await, template literal
-    const greet = async name => {
-      await new Promise(r => setTimeout(r, 3000));
-      alert(`👋 Hello, ${name}! The time is ` + new Date().toLocaleTimeString());
-    };
-    greet('Othmar');
+    let originalString = '';
+    let availableLetters = '';
+    let anagram = '';
+    let savedAnagrams = [];
+
+    const letterPoolEl = document.getElementById('letter-pool');
+    const anagramEl = document.getElementById('anagram');
+    const inputForm = document.getElementById('input-form');
+    const gameContainer = document.getElementById('game-container');
+    const inputString = document.getElementById('input-string');
+    const startBtn = document.getElementById('start-btn');
+    const newGameBtn = document.getElementById('new-game-btn');
+    const savedListContainer = document.getElementById('saved-list-container');
+    const savedListEl = document.getElementById('saved-list');
+
+    function shuffle(str) {
+      const arr = str.split('');
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr.join('');
+    }
+
+    function updateDisplay() {
+      availableLetters = shuffle(availableLetters);
+      letterPoolEl.textContent = availableLetters || '(empty)';
+      anagramEl.textContent = anagram || '(empty)';
+    }
+
+    function startGame() {
+      const input = inputString.value.trim();
+      if (!input) {
+        alert('Please enter a word or phrase!');
+        return;
+      }
+
+      originalString = input;
+      availableLetters = input;
+      anagram = '';
+
+      inputForm.style.display = 'none';
+      gameContainer.classList.add('active');
+
+      updateDisplay();
+      document.addEventListener('keydown', handleKeyPress);
+    }
+
+    function resetGame() {
+      availableLetters = originalString;
+      anagram = '';
+      updateDisplay();
+    }
+
+    function saveAnagram() {
+      if (!anagram) {
+        alert('No anagram to save!');
+        return;
+      }
+
+      savedAnagrams.push({
+        original: originalString,
+        anagram: anagram,
+        timestamp: new Date().toLocaleTimeString()
+      });
+
+      updateSavedList();
+      alert('Anagram saved!');
+    }
+
+    function updateSavedList() {
+      if (savedAnagrams.length === 0) {
+        savedListContainer.style.display = 'none';
+        return;
+      }
+
+      savedListContainer.style.display = 'block';
+      savedListEl.innerHTML = savedAnagrams
+        .map((item, index) =>
+          `<div class="saved-item">${index + 1}. "${item.original}" → "${item.anagram}" (${item.timestamp})</div>`
+        )
+        .join('');
+    }
+
+    function quitGame() {
+      document.removeEventListener('keydown', handleKeyPress);
+      gameContainer.classList.remove('active');
+      inputForm.style.display = 'block';
+      inputString.value = '';
+      inputString.focus();
+    }
+
+    function handleKeyPress(e) {
+      const key = e.key.toUpperCase();
+
+      if (key === 'C') {
+        e.preventDefault();
+        resetGame();
+      } else if (key === 'S') {
+        e.preventDefault();
+        saveAnagram();
+      } else if (key === 'Q') {
+        e.preventDefault();
+        quitGame();
+      } else if (e.key.length === 1) {
+        // Single character typed
+        const char = e.key;
+        const index = availableLetters.indexOf(char);
+
+        if (index !== -1) {
+          anagram += char;
+          availableLetters = availableLetters.slice(0, index) + availableLetters.slice(index + 1);
+          updateDisplay();
+        }
+      }
+    }
+
+    startBtn.addEventListener('click', startGame);
+    newGameBtn.addEventListener('click', quitGame);
+
+    inputString.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        startGame();
+      }
+    });
+
+    console.log('Anagram game loaded at', new Date().toLocaleTimeString());
   </script>
 </body>
 </html>
