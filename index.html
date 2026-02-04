@@ -141,6 +141,7 @@
   <!-- Inline JavaScript -->
   <script>
     let originalString = '';
+    let processedString = ''; // Lowercase, letters-only version for gameplay
     let availableLetters = '';
     let anagram = '';
     let savedAnagrams = [];
@@ -178,8 +179,8 @@
       }
 
       originalString = input; // Keep original for display
-      const processedInput = input.toLowerCase().replace(/[^a-z]/g, '');
-      availableLetters = processedInput;
+      processedString = input.toLowerCase().replace(/[^a-z]/g, '');
+      availableLetters = processedString;
       anagram = '';
 
       inputForm.style.display = 'none';
@@ -190,7 +191,7 @@
     }
 
     function resetGame() {
-      availableLetters = originalString;
+      availableLetters = processedString;
       anagram = '';
       updateDisplay();
     }

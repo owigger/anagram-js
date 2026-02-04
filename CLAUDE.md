@@ -23,9 +23,10 @@ The original C++ implementation (`anagramm.cpp`) provides the game logic referen
 The JavaScript adaptation (`index.html`) now implements the core anagram game logic with the following features:
 
 ### Input Processing
-- Input strings are converted to lowercase and filtered to letters only (a-z)
-- Special characters, spaces, and digits are removed
-- Original input is preserved for display in saved anagrams
+- All input characters (including capital letters) are converted to lowercase
+- Input is filtered to letters only (a-z) - special characters, spaces, and digits are removed
+- Original input string (with original capitalization) is preserved for display in saved anagrams
+- The Clear command (C) resets to the processed lowercase letter pool, not the original input
 
 ### Game Controls
 - **Uppercase C** - Clear current anagram and reset to full letter pool
