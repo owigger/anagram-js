@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64"
+     viewBox="0 0 64 64"
+     xmlns="http://www.w3.org/2000/svg"
+     role="img"
+     aria-labelledby="title">
+  <title id="title">Anagram favicon</title>
+
+  <!-- Background circle – gives a solid base for the tiny icon -->
+  <circle cx="32" cy="32" r="30" fill="#0066CC"/>
+
+  <!-- Letters arranged as an anagram block -->
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-weight="bold"
+        font-size="28"
+        fill="#FFFFFF"
+        letter-spacing="-2">
+    ANAG
+  </text>
+  <text x="50%" y="78%" dominant-baseline="middle" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-weight="bold"
+        font-size="20"
+        fill="#FFFFFF"
+        letter-spacing="-1">
+    RAM
+  </text>
+</svg>
