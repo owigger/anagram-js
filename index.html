@@ -126,8 +126,8 @@
     </div>
 
     <div class="controls">
-      <div>Press C to clear | Press S to save | Press Q to quit</div>
-      <div>Type letters from the pool above to build your anagram</div>
+      <div>Press C to clear | Press S to save | Press Q to quit | Press SPACE to shuffle</div>
+      <div>Type lowercase letters from the pool above to build your anagram</div>
     </div>
 
     <button id="new-game-btn">New Game</button>
@@ -165,7 +165,7 @@
     }
 
     function updateDisplay() {
-      availableLetters = shuffle(availableLetters);
+      // Remove auto-shuffle - only shuffle manually with Space
       letterPoolEl.textContent = availableLetters || '(empty)';
       anagramEl.textContent = anagram || '(empty)';
     }
@@ -177,8 +177,9 @@
         return;
       }
 
-      originalString = input;
-      availableLetters = input;
+      originalString = input; // Keep original for display
+      const processedInput = input.toLowerCase().replace(/[^a-z]/g, '');
+      availableLetters = processedInput;
       anagram = '';
 
       inputForm.style.display = 'none';
@@ -233,26 +234,28 @@
     }
 
     function handleKeyPress(e) {
-      const key = e.key.toUpperCase();
+      const key = e.key; // Don't convert to uppercase
 
-      if (key === 'C') {
+      if (key === 'C') {           // Uppercase C = clear command
         e.preventDefault();
         resetGame();
-      } else if (key === 'S') {
+      } else if (key === 'S') {    // Uppercase S = save command
         e.preventDefault();
         saveAnagram();
-      } else if (key === 'Q') {
+      } else if (key === 'Q') {    // Uppercase Q = quit command
         e.preventDefault();
         quitGame();
-      } else if (e.key.length === 1) {
-        // Single character typed
-        const char = e.key;
-        const index = availableLetters.indexOf(char);
-
+      } else if (key === ' ') {    // Space = shuffle command
+        e.preventDefault();
+        availableLetters = shuffle(availableLetters);
+        letterPoolEl.textContent = availableLetters || '(empty)';
+      } else if (/^[a-z]$/.test(key)) {  // Only lowercase letters for anagram
+        const index = availableLetters.indexOf(key);
         if (index !== -1) {
-          anagram += char;
+          anagram += key;
           availableLetters = availableLetters.slice(0, index) + availableLetters.slice(index + 1);
-          updateDisplay();
+          letterPoolEl.textContent = availableLetters || '(empty)';
+          anagramEl.textContent = anagram || '(empty)';
         }
       }
     }

@@ -20,7 +20,25 @@ The original C++ implementation (`anagramm.cpp`) provides the game logic referen
 - User selects letters to build an anagram
 - Commands: C=clear, Q=quit, S=store to file
 
-The JavaScript adaptation is currently in early demo stage (`index.html`) and does not yet implement the full anagram game logic from the C++ version.
+The JavaScript adaptation (`index.html`) now implements the core anagram game logic with the following features:
+
+### Input Processing
+- Input strings are converted to lowercase and filtered to letters only (a-z)
+- Special characters, spaces, and digits are removed
+- Original input is preserved for display in saved anagrams
+
+### Game Controls
+- **Uppercase C** - Clear current anagram and reset to full letter pool
+- **Uppercase S** - Save current anagram to the saved list
+- **Uppercase Q** - Quit to start screen
+- **Space** - Manually shuffle remaining letters
+- **Lowercase letters (a-z)** - Build anagram by selecting from available letters
+
+### Key Implementation Details
+- Case-sensitive input: uppercase keys are commands, lowercase letters build anagrams
+- No collision between command keys (C/S/Q) and anagram letters (c/s/q)
+- Letters are NOT auto-shuffled after each selection (only on manual Space press)
+- Saved anagrams display with timestamp and original input string
 
 ## Development
 
