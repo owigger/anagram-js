@@ -203,6 +203,11 @@
         return;
       }
 
+      if (availableLetters) {
+        alert('Cannot save! You still have letters left in the pool.');
+        return;
+      }
+
       savedAnagrams.push({
         original: originalString,
         anagram: anagram,
